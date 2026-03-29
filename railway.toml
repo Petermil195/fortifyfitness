@@ -2,6 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
+# Keeping releaseCommand for safety, but adding it to startCommand for a "force" migraton
 releaseCommand = "python manage.py migrate --no-input && python manage.py collectstatic --no-input"
-startCommand = "gunicorn fitnessPlatform.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+startCommand = "python manage.py migrate --no-input && gunicorn fitnessPlatform.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
 restartPolicyType = "ON_FAILURE"
