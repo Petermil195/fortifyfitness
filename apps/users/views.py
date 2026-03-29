@@ -25,7 +25,7 @@ def get_tokens_for_user(user):
 def register_user(request):
     """
     Register a new user and return JWT tokens.
-    
+
     POST /api/auth/register/
     Body: {
         "email": "user@example.com",
@@ -35,22 +35,31 @@ def register_user(request):
         "last_name": "Doe"
     }
     """
+    import traceback
+
     print(f"DEBUG: Request method: {request.method}")
     print(f"DEBUG: Request data: {request.data}")
     print(f"DEBUG: Request content-type: {request.content_type}")
-    
+
     serializer = UserRegistrationSerializer(data=request.data)
-    
+
     if serializer.is_valid():
-        user = serializer.save()
-        tokens = get_tokens_for_user(user)
-        
-        return Response({
-            'message': 'User registered successfully',
-            'user': UserSerializer(user).data,
-            'tokens': tokens
-        }, status=status.HTTP_201_CREATED)
-    
+        try:
+            user = serializer.save()
+            tokens = get_tokens_for_user(user)
+            return Response({
+                'message': 'User registered successfully',
+                'user': UserSerializer(user).data,
+                'tokens': tokens
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(f"REGISTRATION EXCEPTION: {type(e).__name__}: {e}")
+            print(f"TRACEBACK:\n{traceback.format_exc()}")
+            return Response(
+                {'error': f'{type(e).__name__}: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
     print(f"DEBUG: Serializer errors: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
