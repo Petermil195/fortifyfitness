@@ -18,6 +18,8 @@ LEVEL_LABELS = {
     4: "Perform",
 }
 
+BOOK_A_CALL_URL = "https://fortifyfitness.com/glp1bookacall"
+
 
 def _get_level_from_score(score: float) -> int:
     if score >= 80:
@@ -152,6 +154,13 @@ def _build_html_body(user_name: str, results: Dict[str, Any], recommendations: L
             {''.join([f'<li style=\"margin:8px 0;\">{item}</li>' for item in recommendations]) or '<li>No recommendations available.</li>'}
           </ul>
 
+          <!-- Book a Call CTA -->
+          <div style=\"margin:32px 0; padding:24px; background:linear-gradient(135deg,#f0fdf4,#dcfce7); border-radius:12px; border:1px solid #bbf7d0; text-align:center;\">
+            <p style=\"margin:0 0 6px; font-size:18px; font-weight:700; color:#0f172a;\">Ready to Take the Next Step?</p>
+            <p style=\"margin:0 0 18px; font-size:14px; color:#475569;\">Book a free strategy call with a Fortify Fitness coach and get a personalised plan based on your results.</p>
+            <a href=\"{BOOK_A_CALL_URL}\" style=\"display:inline-block; background:linear-gradient(135deg,#0f766e,#0ea5a4); color:#ffffff; font-weight:700; font-size:15px; text-decoration:none; padding:14px 32px; border-radius:8px;\">Book Your Free Call &rarr;</a>
+          </div>
+
           <p style=\"margin:24px 0 0; color:#64748b; font-size:13px;\">
             This is an automated summary from Fortify Fitness. Keep this email for your records.
           </p>
@@ -174,7 +183,10 @@ def _build_text_body(user_name: str, results: Dict[str, Any], recommendations: L
         f"Competency: Level {competency_level} - {competency_label}\n"
         f"Injury Flags: {results.get('flag_count', 0)}\n"
         f"Safety Mode Count: {results.get('safety_mode_count', 0)}\n\n"
-        f"Recommendations:\n{recommendation_lines}\n"
+        f"Recommendations:\n{recommendation_lines}\n\n"
+        f"---\n"
+        f"Ready to take the next step? Book a free strategy call with a Fortify Fitness coach:\n"
+        f"{BOOK_A_CALL_URL}\n"
     )
 
 

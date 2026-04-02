@@ -23,47 +23,25 @@ def get_tokens_for_user(user):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
-    """Register user with absolute logging and DB checks"""
-    import traceback
-    import sys
-    from django.db import connection
+    """Register a new user and return JWT tokens"""
+    serializer = UserRegistrationSerializer(data=request.data)
 
-    print(">>> REGISTRATION ATTEMPT START", flush=True)
+    if serializer.is_valid():
+        try:
+            user = serializer.save()
+            tokens = get_tokens_for_user(user)
+            return Response({
+                'message': 'User registered successfully',
+                'user': UserSerializer(user).data,
+                'tokens': tokens
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response(
+                {'error': 'A server error occurred during registration.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
-    # 1. Check Database Connectivity
-    try:
-        connection.ensure_connection()
-        print(">>> DB CONNECTION: OK", flush=True)
-    except Exception as e:
-        print(f">>> DB CONNECTION FAILED: {e}", flush=True)
-        return Response({"error": "Database connection failed"}, status=500)
-
-    try:
-        print(f">>> DATA: {request.data}", flush=True)
-        serializer = UserRegistrationSerializer(data=request.data)
-
-        if not serializer.is_valid():
-            print(f">>> VALIDATION FAILED: {serializer.errors}", flush=True)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        print(">>> VALIDATION PASSED, SAVING...", flush=True)
-        user = serializer.save()
-        print(f">>> USER SAVED: ID {user.id}", flush=True)
-
-        tokens = get_tokens_for_user(user)
-        return Response({
-            'message': 'User registered successfully',
-            'user': UserSerializer(user).data,
-            'tokens': tokens
-        }, status=status.HTTP_201_CREATED)
-
-    except Exception as e:
-        print(f">>> CRITICAL ERROR: {type(e).__name__}: {e}", flush=True)
-        traceback.print_exc(file=sys.stdout)
-        return Response(
-            {'error': f'Server Error: {str(e)}'},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
