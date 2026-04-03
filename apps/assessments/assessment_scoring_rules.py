@@ -85,16 +85,16 @@ EXERCISE_SCORING_RULES = {
     },
     'clock_steps': {
         'type': 'dual_input_reps',
-        'max_input': 6,
+        'max_input': 12,
         'inputs': ['left', 'right'],
         'calculation': 'average_and_floor',
         'thresholds': [
-            {'min': 0, 'max': 1, 'score': 0},
-            {'min': 2, 'max': 3, 'score': 1},
-            {'min': 4, 'max': 5, 'score': 2},
-            {'min': 6, 'max': 6, 'score': 3},
+            {'min': 0,  'max': 3,  'score': 0},
+            {'min': 4,  'max': 7,  'score': 1},
+            {'min': 8,  'max': 11, 'score': 2},
+            {'min': 12, 'max': 12, 'score': 3},
         ],
-        'description': 'Average both sides, floor decimal. 0-1 = 0, 2-3 = 1, 4-5 = 2, 6 = 3',
+        'description': 'Average both sides (each 0-12), floor decimal. 0-3=0, 4-7=1, 8-11=2, 12=3',
     },
 }
 

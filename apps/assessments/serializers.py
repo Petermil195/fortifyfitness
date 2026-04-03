@@ -98,15 +98,15 @@ class AssessmentSerializer(serializers.ModelSerializer):
         return value
 
     def validate_clock_steps_left(self, value):
-        """Validate Clock Steps left (0-6 steps)"""
-        if not (0 <= value <= 6):
-            raise serializers.ValidationError("Clock Steps left must be 0-6 steps.")
+        """Validate Clock Steps left (0-12 steps)"""
+        if not (0 <= value <= 12):
+            raise serializers.ValidationError("Clock Steps left must be 0-12 steps.")
         return value
 
     def validate_clock_steps_right(self, value):
-        """Validate Clock Steps right (0-6 steps)"""
-        if not (0 <= value <= 6):
-            raise serializers.ValidationError("Clock Steps right must be 0-6 steps.")
+        """Validate Clock Steps right (0-12 steps)"""
+        if not (0 <= value <= 12):
+            raise serializers.ValidationError("Clock Steps right must be 0-12 steps.")
         return value
 
     def validate_questionnaire_score(self, value, field_name, max_val):
